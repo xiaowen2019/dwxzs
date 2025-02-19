@@ -1,35 +1,227 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-       <title>评语生成器（测试版本）</title>
-       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>评语生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column; /* 默认为垂直布局（手机端） */
+        }
+
+        @media (min-width: 768px) {
+            /* 屏幕宽度大于等于 768px 时（电脑端） */
+            .container {
+                flex-direction: row; /* 横向布局 */
+            }
+            .input-panel {
+                width: 40%;
+                margin-right: 20px;
+            }
+            .result-panel {
+                width: 60%;
+            }
+        }
+
+        .input-panel {
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        .input-field {
+            margin-bottom: 15px;
+        }
+
+        .input-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-field select,
+        .input-field input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .result-panel {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-sizing: border-box;
+            margin-top: 20px;
+        }
+
+        .result-content {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 15px;
+            min-height: 200px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #333;
+            visibility: hidden;
+            z-index: 1000;
+        }
+
+        .disclaimer {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-<b>评语生成器（测试版本）</b><br>
-<b>使用教程：</b>请点击右下角图标打开对话框，将完整的问题输入对话框中，即可询问党务相关知识。<br>
-<b>温馨提醒：</b>请不要提供给诸如您的银行信息、密码、家庭地址等敏感信息<br>
-<b>使用声明：</b>内容由 AI 自动生成，无法确保真实准确，仅供参考。<br>
-<b>使用须知：</b>在使用服务时，必须遵守《网络安全法》、《反电信网络诈骗法》、《计算机信息网络国际联网安全保护管理办法》、《互联网信息服务管理办法》、《互联网用户账号信息管理规定》、《网络信息内容生态治理规定》、《维护互联网安全的决定》、《互联网新闻信息服务管理规定》、《互联网宗教信息服务管理办法》等中华人民共和国相关法律法规的规定，用户使用本服务时不可利用本服务进行任何违法或不正当的活动。<br>
-<b>当前版本：</b>V0.0.1<br>
-       <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.1.0-beta.3/libs/cn/index.js"></script>
-<script>
-  new CozeWebSDK.WebChatClient({
-    config: {
-      bot_id: '7450831412301152310',
-    },
-    componentProps: {
-      title: 'Coze',
-    },
-    auth: {
-      type: 'token',
-      token: 'pat_B5vBzf1MT2DiwRm3gD7LxJuNjurzNk3UFq2OULxwbRLKpkok49c4dcCyNQQi9Uxu',
-      onRefreshToken: function () {
-        return 'pat_B5vBzf1MT2DiwRm3gD7LxJuNjurzNk3UFq2OULxwbRLKpkok49c4dcCyNQQi9Uxu'
-      }
-    }
-  });
-</script>
-         
+    <div class="container">
+        <!-- 左侧输入端 -->
+        <div class="input-panel">
+            <h2>输入信息</h2>
+            <div class="input-field">
+                <label for="shenfen">被评价者身份:</label>
+                <input type="text" id="shenfen" placeholder="请输入被评价者身份">
+            </div>
+            <div class="input-field">
+                <label for="danwei">被评价者单位:</label>
+                <input type="text" id="danwei" placeholder="请输入被评价者工作单位">
+            </div>
+            <div class="input-field">
+                <label for="leixing">评语类型:</label>
+                <select id="leixing">
+                    <option value="表扬">表扬</option>
+                    <option value="批评">批评</option>
+                    <option value="一半表扬一半批评">一半表扬一半批评</option>
+                </select>
+            </div>
+            <div class="input-field">
+                <label for="zishu">字数要求（默认200字）:</label>
+                <input type="text" id="zishu" value="200">
+            </div>
+            <button id="generateBtn">生成评语</button>
+        </div>
+
+        <!-- 右侧结果展示 -->
+        <div class="result-panel">
+            <h2>评语生成结果</h2>
+            <div class="result-content" id="result"></div>
+            <div class="disclaimer">* 声明：本评语仅供参考，不具有法律效力，如有歧义，请以实际情况为准。</div>
+        </div>
+    </div>
+
+    <!-- 动态加载提示 -->
+    <div class="loading-overlay" id="loading">
+        <div>生成中...</div>
+    </div>
+
+    <script>
+        const API_URL = 'https://api.siliconflow.cn/v1/chat/completions'; // 替换为实际的 API 地址
+        const API_KEY = 'sk-qsbonstbuwsmlqrfnfvroixazexckbjfzgoodyfpkbblhrio'; // 替换为你的 API KEY
+
+        document.getElementById('generateBtn').addEventListener('click', generateComment);
+
+        async function generateComment() {
+            // 显示加载动画
+            const loading = document.getElementById('loading');
+            loading.style.visibility = 'visible';
+
+            const shenfen = document.getElementById('shenfen').value.trim();
+            const danwei = document.getElementById('danwei').value.trim();
+            const leixing = document.getElementById('leixing').value;
+            const zishu = document.getElementById('zishu').value.trim();
+
+            if (!shenfen || !danwei) {
+                alert('被评价者身份或单位不能为空！');
+                loading.style.visibility = 'hidden';
+                return;
+            }
+
+            const prompt = `生成一篇关于${shenfen}（${danwei}）的官话体评语，以${leixing}为主，字数要求${zishu}字。`;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: "deepseek-ai/DeepSeek-V3",
+                        messages: [
+                            { role: 'system', content: prompt }
+                        ]
+                    })
+                });
+
+                if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
+                const data = await response.json();
+                const comment = data.choices[0]?.message?.content || '抱歉，系统生成失败，请稍后再试。';
+
+                // 更新结果页面
+                document.getElementById('result').innerHTML = comment;
+            } catch (error) {
+                console.error('API Error:', error);
+                document.getElementById('result').innerHTML = '抱歉，系统出现错误，评语生成失败！';
+            } finally {
+                // 隐藏加载动画
+                setTimeout(() => {
+                    loading.style.visibility = 'hidden';
+                }, 500); // 延迟半秒隐藏，提升用户体验
+            }
+        }
+    </script>
 </body>
 </html>
