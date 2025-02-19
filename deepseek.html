@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>硅基流动对话应用</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #e3f2fd; /* 背景颜色 */
+        }
+
+        .chat-container {
+            width: 80%;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .messages {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            max-width: 60%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: #cceeff; /* 用户消息背景色 */
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #e6ffe6; /* 硅基流动回复背景色 */
+            align-self: flex-start;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+
+        button {
+            background-color: #2196f3; /* 按钮背景色 */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1976d2; /* 按钮悬停背景色 */
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="messages" id="messages">
+            <!-- Messages will be inserted here -->
+        </div>
+        <form class="input-area" id="chatForm">
+            <textarea id="userInput" placeholder="请输入..."></textarea>
+            <button type="submit">发送</button>
+        </form>
+    </div>
+
+    <script>
+        const API_URL = 'https://api.siliconflow.cn/v1/chat/completions'; // 替换为官方API地址
+        const API_KEY = 'sk-qsbonstbuwsmlqrfnfvroixazexckbjfzgoodyfpkbblhrio'; // 替换为你的API密钥
+
+        document.getElementById('chatForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userInput = document.getElementById('userInput').value.trim();
+
+            if (!userInput) return;
+
+            displayMessage('user', userInput);
+            document.getElementById('userInput').value = '';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: "deepseek-ai/DeepSeek-V3", // 模型名称
+                        messages: [
+                            { role: 'user', content: userInput }
+                        ]
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data);
+                displayMessage('bot', data.choices?.[0]?.message?.content || '抱歉，系统出现错误！');
+            } catch (error) {
+                console.error('硅基流动API错误:', error);
+                displayMessage('bot', '抱歉，系统出现错误！');
+            }
+        });
+
+        function displayMessage(sender, text) {
+            const messagesContainer = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>
