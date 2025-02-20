@@ -1,36 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-       <title>党务小助手（测试版本）</title>
-       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>党务工作助手</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            font-size: 36px;
+            color: #333;
+        }
+        .button-container {
+            display: inline-block;
+            margin: 20px;
+        }
+        .button {
+            display: block;
+            width: 200px;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            font-size: 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            opacity: 0.9;
+        }
+        .button.purple {
+            background: linear-gradient(135deg, #ff7c92, #fec564);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .button.blue {
+            background: linear-gradient(135deg, #66c0f4, #a6e1fa);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
 <body>
-<b>党务小助手（测试版本）</b><br>
-<b>使用教程：</b>请点击右下角图标打开对话框，将完整的问题输入对话框中，即可询问党务相关知识。<br>
-<b>温馨提醒：</b>请不要提供给诸如您的银行信息、密码、家庭地址等敏感信息<br>
-<b>使用声明：</b>内容由 AI 自动生成，无法确保真实准确，仅供参考。<br>
-<b>使用须知：</b>在使用服务时，必须遵守《网络安全法》、《反电信网络诈骗法》、《计算机信息网络国际联网安全保护管理办法》、《互联网信息服务管理办法》、《互联网用户账号信息管理规定》、《网络信息内容生态治理规定》、《维护互联网安全的决定》、《互联网新闻信息服务管理规定》、《互联网宗教信息服务管理办法》等中华人民共和国相关法律法规的规定，用户使用本服务时不可利用本服务进行任何违法或不正当的活动。<br>
-<b>当前版本：</b>V0.0.1<br>
-<a href="pingyu.html">评语生成器</a><br>
-       
-<script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.1.0-beta.3/libs/cn/index.js"></script>
-<script>
-  new CozeWebSDK.WebChatClient({
-    config: {
-      bot_id: '7416339904173015040',
-    },
-    componentProps: {
-      title: 'Coze',
-    },
-    auth: {
-      type: 'token',
-      token: 'pat_B5vBzf1MT2DiwRm3gD7LxJuNjurzNk3UFq2OULxwbRLKpkok49c4dcCyNQQi9Uxu',
-      onRefreshToken: function () {
-        return 'pat_B5vBzf1MT2DiwRm3gD7LxJuNjurzNk3UFq2OULxwbRLKpkok49c4dcCyNQQi9Uxu'
-      }
-    }
-  });
-</script>
+    <div class="container">
+        <h1>党务工作助手</h1>
+        <p>让党务工作更高效、更轻松。</p>
+        <div class="button-container">
+            <a href="pingjia.html" class="button purple">评语撰写</a>
+        </div>
+        <div class="button-container">
+            <a href="https://docs.qq.com/aio/p/sco69rzu0xo60qi?p=RkSgKnJ96UIr6Jhsa1xKPJ&nlc=1" class="button blue">知识快查</a>
+        </div>
+    </div>
 </body>
 </html>
